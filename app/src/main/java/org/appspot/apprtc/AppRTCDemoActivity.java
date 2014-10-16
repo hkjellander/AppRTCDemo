@@ -50,6 +50,7 @@ import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,7 +94,6 @@ public class AppRTCDemoActivity extends Activity
   private final GAEChannelClient.MessageHandler gaeHandler = new GAEHandler();
   private AppRTCClient appRtcClient = new AppRTCClient(this, gaeHandler, this);
   private GLSurfaceView vsv;
-  private Button disconnectButton;
   private VideoRenderer.Callbacks localRender;
   private VideoRenderer.Callbacks remoteRender;
   private Toast logToast;
@@ -125,29 +125,30 @@ public class AppRTCDemoActivity extends Activity
         new UnhandledExceptionHandler(this));
 
     vsv = (GLSurfaceView) findViewById(R.id.glview);
-
     VideoRendererGui.setView(vsv);
     remoteRender = VideoRendererGui.create(0, 0, 100, 100,
         VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
     localRender = VideoRendererGui.create(70, 5, 25, 25,
         VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
 
-    vsv.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        toggleHUD();
-      }
-    });
     logAndToast("Tap the screen to toggle stats visibility");
-    disconnectButton = (Button) findViewById(R.id.button_disconnect);
-    disconnectButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        logAndToast("Disconnecting call.");
-        // TODO(kjellander): Make this only disconnect and go back to the join room dialog.
-        disconnectAndExit();
-      }
-    });
+
+    ((ImageButton) findViewById(R.id.button_disconnect)).setOnClickListener(
+        new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            logAndToast("Disconnecting call.");
+            // TODO(kjellander): Make this only disconnect and go back to the join room dialog.
+            disconnectAndExit();
+          }
+        });
+    ((ImageButton) findViewById(R.id.button_toggle_debug)).setOnClickListener(
+        new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            toggleHUD();
+          }
+        });
 
     hudView = new TextView(this);
     hudView.setTextColor(Color.BLACK);
