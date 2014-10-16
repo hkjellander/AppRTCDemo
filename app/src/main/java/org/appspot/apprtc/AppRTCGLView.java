@@ -30,13 +30,17 @@ package org.appspot.apprtc;
 import android.content.Context;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
+import android.util.AttributeSet;
 
 public class AppRTCGLView extends GLSurfaceView {
   private Point screenDimensions;
 
-  public AppRTCGLView(Context c, Point screenDimensions) {
-    super(c);
-    this.screenDimensions = screenDimensions;
+  public AppRTCGLView(Context context) {
+    super(context);
+  }
+
+  public AppRTCGLView(Context context, AttributeSet attrs) {
+    super(context, attrs);
   }
 
   public void updateDisplaySize(Point screenDimensions) {
