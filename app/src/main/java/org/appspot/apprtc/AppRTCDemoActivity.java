@@ -137,9 +137,9 @@ public class AppRTCDemoActivity extends Activity
         new OnClickListener() {
           @Override
           public void onClick(View view) {
-          logAndToast("Disconnecting call.");
-          // TODO(kjellander): Make this only disconnect and go back to the join room dialog.
-          disconnectAndExit();
+            logAndToast("Disconnecting call.");
+            // TODO(kjellander): Make this only disconnect and go back to the join room dialog.
+            disconnectAndExit();
           }
         });
     ((ImageButton) findViewById(R.id.button_toggle_debug)).setOnClickListener(
