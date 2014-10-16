@@ -14,4 +14,5 @@
             android:contentDescription="@string/disconnect_call"
             android:layout_width="48dp"
             android:layout_height="48dp"/>
+    <!-- TODO(kjellander): Add audio and video mute buttons. -->
 </RelativeLayout>
