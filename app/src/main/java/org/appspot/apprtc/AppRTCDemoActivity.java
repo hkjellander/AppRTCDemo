@@ -36,6 +36,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.media.AudioManager;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -44,6 +45,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.widget.Button;
@@ -90,7 +92,7 @@ public class AppRTCDemoActivity extends Activity
   private final SDPObserver sdpObserver = new SDPObserver();
   private final GAEChannelClient.MessageHandler gaeHandler = new GAEHandler();
   private AppRTCClient appRtcClient = new AppRTCClient(this, gaeHandler, this);
-  private AppRTCGLView vsv;
+  private GLSurfaceView vsv;
   private Button disconnectButton;
   private VideoRenderer.Callbacks localRender;
   private VideoRenderer.Callbacks remoteRender;
@@ -107,19 +109,22 @@ public class AppRTCDemoActivity extends Activity
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    // Set window styles for fullscreen-window size. Needs to be done before
+    // adding content.
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    getWindow().getDecorView().setSystemUiVisibility(
+        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+        View.SYSTEM_UI_FLAG_FULLSCREEN |
+        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
     setContentView(R.layout.activity_fullscreen);
 
     Thread.setDefaultUncaughtExceptionHandler(
         new UnhandledExceptionHandler(this));
 
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-    Point displaySize = new Point();
-    getWindowManager().getDefaultDisplay().getRealSize(displaySize);
-
-    vsv = (AppRTCGLView) findViewById(R.id.glview);
-    vsv.updateDisplaySize(displaySize);
+    vsv = (GLSurfaceView) findViewById(R.id.glview);
 
     VideoRendererGui.setView(vsv);
     remoteRender = VideoRendererGui.create(0, 0, 100, 100,
@@ -272,14 +277,6 @@ public class AppRTCDemoActivity extends Activity
     if (videoSource != null && videoSourceStopped) {
       videoSource.restart();
     }
-  }
-
-  @Override
-  public void onConfigurationChanged (Configuration newConfig) {
-    Point displaySize = new Point();
-    getWindowManager().getDefaultDisplay().getSize(displaySize);
-    vsv.updateDisplaySize(displaySize);
-    super.onConfigurationChanged(newConfig);
   }
 
   // Just for fun (and to regression-test bug 2302) make sure that DataChannels
