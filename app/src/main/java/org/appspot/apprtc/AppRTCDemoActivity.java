@@ -29,6 +29,7 @@ package org.appspot.apprtc;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -38,10 +39,14 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,6 +91,7 @@ public class AppRTCDemoActivity extends Activity
   private final GAEChannelClient.MessageHandler gaeHandler = new GAEHandler();
   private AppRTCClient appRtcClient = new AppRTCClient(this, gaeHandler, this);
   private AppRTCGLView vsv;
+  private Button disconnectButton;
   private VideoRenderer.Callbacks localRender;
   private VideoRenderer.Callbacks remoteRender;
   private Toast logToast;
@@ -112,7 +118,7 @@ public class AppRTCDemoActivity extends Activity
     Point displaySize = new Point();
     getWindowManager().getDefaultDisplay().getRealSize(displaySize);
 
-    vsv = (AppRTCGLView)findViewById(R.id.glview);
+    vsv = (AppRTCGLView) findViewById(R.id.glview);
     vsv.updateDisplaySize(displaySize);
 
     VideoRendererGui.setView(vsv);
@@ -122,11 +128,21 @@ public class AppRTCDemoActivity extends Activity
         VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
 
     vsv.setOnClickListener(new View.OnClickListener() {
-        @Override public void onClick(View v) {
-          toggleHUD();
-        }
-      });
+      @Override
+      public void onClick(View v) {
+        toggleHUD();
+      }
+    });
     logAndToast("Tap the screen to toggle stats visibility");
+    disconnectButton = (Button) findViewById(R.id.button_disconnect);
+    disconnectButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        logAndToast("Disconnecting call.");
+        // TODO(kjellander): Make this only disconnect and go back to the join room dialog.
+        disconnectAndExit();
+      }
+    });
 
     hudView = new TextView(this);
     hudView.setTextColor(Color.BLACK);
@@ -460,6 +476,16 @@ public class AppRTCDemoActivity extends Activity
       newSdpDescription.append(line).append("\r\n");
     }
     return newSdpDescription.toString();
+  }
+
+  public static class MenuBarFragment extends Fragment {
+    @Override
+    public View onCreateView(
+        LayoutInflater inflater,
+        ViewGroup container,
+        Bundle savedInstanceState) {
+     return inflater.inflate(R.layout.fragment_menubar, container, false);
+    }
   }
 
   // Implementation detail: observe ICE & stream changes and react accordingly.
