@@ -28,13 +28,9 @@
 package org.appspot.apprtc;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.media.AudioManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -48,8 +44,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -175,34 +169,14 @@ public class AppRTCDemoActivity extends Activity
         "OfferToReceiveVideo", "true"));
 
     final Intent intent = getIntent();
-    if ("android.intent.action.VIEW".equals(intent.getAction())) {
-      connectToRoom(intent.getData().toString());
-      return;
+    String url = intent.getStringExtra(ConnectActivity.CONNECT_URL_EXTRA);
+    if (url != null) {
+      logAndToast(getString(R.string.connecting_to, url));
+      appRtcClient.connectToRoom(url);
+    } else {
+      Toast.makeText(this, getString(R.string.missing_url), Toast.LENGTH_LONG);
+      Log.wtf(TAG, "Didn't get any URL in intent extra!");
     }
-    showGetRoomUI();
-  }
-
-  private void showGetRoomUI() {
-    final EditText roomInput = new EditText(this);
-    roomInput.setText("https://apprtc.appspot.com/?r=");
-    roomInput.setSelection(roomInput.getText().length());
-    DialogInterface.OnClickListener listener =
-        new DialogInterface.OnClickListener() {
-          @Override public void onClick(DialogInterface dialog, int which) {
-            abortUnless(which == DialogInterface.BUTTON_POSITIVE, "lolwat?");
-            dialog.dismiss();
-            connectToRoom(roomInput.getText().toString());
-          }
-        };
-    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder
-        .setMessage("Enter room URL").setView(roomInput)
-        .setPositiveButton("Go!", listener).show();
-  }
-
-  private void connectToRoom(String roomUrl) {
-    logAndToast("Connecting to room...");
-    appRtcClient.connectToRoom(roomUrl);
   }
 
   // Toggle visibility of the heads-up display.
