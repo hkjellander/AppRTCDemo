@@ -101,6 +101,7 @@ public class AppRTCDemoActivity extends Activity
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_fullscreen);
 
     Thread.setDefaultUncaughtExceptionHandler(
         new UnhandledExceptionHandler(this));
@@ -111,7 +112,9 @@ public class AppRTCDemoActivity extends Activity
     Point displaySize = new Point();
     getWindowManager().getDefaultDisplay().getRealSize(displaySize);
 
-    vsv = new AppRTCGLView(this, displaySize);
+    vsv = (AppRTCGLView)findViewById(R.id.glview);
+    vsv.updateDisplaySize(displaySize);
+
     VideoRendererGui.setView(vsv);
     remoteRender = VideoRendererGui.create(0, 0, 100, 100,
         VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
@@ -123,7 +126,6 @@ public class AppRTCDemoActivity extends Activity
           toggleHUD();
         }
       });
-    setContentView(vsv);
     logAndToast("Tap the screen to toggle stats visibility");
 
     hudView = new TextView(this);
