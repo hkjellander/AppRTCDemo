@@ -4,8 +4,9 @@
     <string name="disconnect_call">Disconnect Call</string>
     <string name="apprtc_url">URL:</string>
     <string name="room_name">Room name:</string>
-    <string name="room_description">Please enter a room name. This must be a globally unique
-        string.
+    <string name="room_description">
+        Please enter a room name. Room names are shared with everyone, so think
+        of something unique and send it to a friend.
     </string>
     <string name="connect_text">Connect</string>
     <string name="invalid_url_title">Invalid URL</string>

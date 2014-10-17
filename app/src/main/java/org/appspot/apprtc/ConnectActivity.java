@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -41,6 +44,16 @@ public class ConnectActivity extends Activity {
 
     urlEditText = (EditText) findViewById(R.id.url_edittext);
     roomEditText = (EditText) findViewById(R.id.room_edittext);
+    roomEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+      @Override
+      public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+        if (i == EditorInfo.IME_ACTION_GO) {
+          connectButton.performClick();
+          return true;
+        }
+        return false;
+      }
+    });
     roomEditText.requestFocus();
 
     // TODO(kjellander): Make pressing the Enter key the same as clicking Connect.
