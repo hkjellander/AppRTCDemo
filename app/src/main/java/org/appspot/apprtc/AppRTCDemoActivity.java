@@ -406,6 +406,7 @@ public class AppRTCDemoActivity extends Activity
     Log.d(TAG, msg);
     toast(msg);
   }
+
   private void toast(String msg) {
     if (logToast != null) {
       logToast.cancel();
