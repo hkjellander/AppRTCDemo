@@ -132,8 +132,7 @@ public class AppRTCDemoActivity extends Activity
           @Override
           public void onClick(View view) {
             logAndToast("Disconnecting call.");
-            // TODO(kjellander): Make this only disconnect and go back to the join room dialog.
-            disconnectAndExit();
+            disconnect();
           }
         });
     ((ImageButton) findViewById(R.id.button_toggle_debug)).setOnClickListener(
@@ -366,7 +365,7 @@ public class AppRTCDemoActivity extends Activity
 
   @Override
   protected void onDestroy() {
-    disconnectAndExit();
+    disconnect();
     super.onDestroy();
   }
 
@@ -647,7 +646,7 @@ public class AppRTCDemoActivity extends Activity
           pc.setRemoteDescription(sdpObserver, sdp);
         } else if (type.equals("bye")) {
           logAndToast("Remote end hung up; dropping PeerConnection");
-          disconnectAndExit();
+          disconnect();
         } else {
           throw new RuntimeException("Unexpected message: " + data);
         }
@@ -657,16 +656,18 @@ public class AppRTCDemoActivity extends Activity
     }
 
     @JavascriptInterface public void onClose() {
-      disconnectAndExit();
+      disconnect();
     }
 
     @JavascriptInterface public void onError(int code, String description) {
-      disconnectAndExit();
+      disconnect();
     }
   }
 
-  // Disconnect from remote resources, dispose of local resources, and exit.
-  private void disconnectAndExit() {
+  /**
+   * Disconnect from remote resources, dispose of local resources and move back to the connect page.
+   */
+  private void disconnect() {
     synchronized (quit[0]) {
       if (quit[0]) {
         return;
@@ -689,7 +690,7 @@ public class AppRTCDemoActivity extends Activity
         factory.dispose();
         factory = null;
       }
-      finish();
+      startActivity(new Intent(this, ConnectActivity.class));
     }
   }
 
