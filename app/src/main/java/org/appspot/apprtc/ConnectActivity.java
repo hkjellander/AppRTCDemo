@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -55,17 +56,17 @@ public class ConnectActivity extends Activity {
     });
   }
 
-  private void connectToRoom(String url) {
+  private void connectToRoom(String uriString) {
+    Uri url = Uri.parse(uriString);
     if (isUrlOk(url)) {
-      logAndToast(getString(R.string.connecting_to, url));
       Intent intent = new Intent(this, AppRTCDemoActivity.class);
-      intent.putExtra(CONNECT_URL_EXTRA, url);
+      intent.setData(url);
       startActivity(intent);
     }
   }
 
-  private boolean isUrlOk(String url) {
-    if (!URLUtil.isValidUrl(url)) {
+  private boolean isUrlOk(Uri url) {
+    if (url == null) {
       new AlertDialog.Builder(this)
           .setTitle(getText(R.string.invalid_url_title))
           .setMessage(getString(R.string.invalid_url_text, url))
