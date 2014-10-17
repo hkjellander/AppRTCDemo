@@ -88,6 +88,7 @@ public class AppRTCDemoActivity extends Activity
   private final GAEChannelClient.MessageHandler gaeHandler = new GAEHandler();
   private AppRTCClient appRtcClient = new AppRTCClient(this, gaeHandler, this);
   private GLSurfaceView vsv;
+  private View menuBar;
   private VideoRenderer.Callbacks localRender;
   private VideoRenderer.Callbacks remoteRender;
   private Toast logToast;
@@ -118,6 +119,8 @@ public class AppRTCDemoActivity extends Activity
     Thread.setDefaultUncaughtExceptionHandler(
         new UnhandledExceptionHandler(this));
 
+    menuBar = findViewById(R.id.menubar_fragment);
+
     vsv = (GLSurfaceView) findViewById(R.id.glview);
     VideoRendererGui.setView(vsv);
     remoteRender = VideoRendererGui.create(0, 0, 100, 100,
@@ -125,7 +128,15 @@ public class AppRTCDemoActivity extends Activity
     localRender = VideoRendererGui.create(70, 5, 25, 25,
         VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
 
-    logAndToast("Tap the screen to toggle stats visibility");
+    vsv.setOnClickListener(
+      new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          menuBar.setVisibility(menuBar.getVisibility() == View.VISIBLE ?
+                                    View.INVISIBLE : View.VISIBLE);
+        }
+      });
+
 
     ((ImageButton) findViewById(R.id.button_disconnect)).setOnClickListener(
         new OnClickListener() {
