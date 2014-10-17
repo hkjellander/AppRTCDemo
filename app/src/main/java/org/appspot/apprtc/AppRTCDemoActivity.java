@@ -690,7 +690,7 @@ public class AppRTCDemoActivity extends Activity
         factory.dispose();
         factory = null;
       }
-      startActivity(new Intent(this, ConnectActivity.class));
+      finish();
     }
   }
 
