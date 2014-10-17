@@ -56,8 +56,6 @@ public class ConnectActivity extends Activity {
     });
     roomEditText.requestFocus();
 
-    // TODO(kjellander): Make pressing the Enter key the same as clicking Connect.
-
     connectButton = (Button) findViewById(R.id.connect_button);
     connectButton.setOnClickListener(new OnClickListener() {
       @Override
