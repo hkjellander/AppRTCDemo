@@ -8,6 +8,21 @@ android {
         applicationId "org.appspot.apprtc"
         minSdkVersion 13
         targetSdkVersion 17
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs "src/main/java"
+            res.srcDirs "src/main/res"
+        }
+        androidTest.setRoot('tests')
+        androidTest.java.srcDirs = ['tests/src']
+    }
+
+    // Exclude duplicated Hamcrest LICENSE.txt from being packaged into the apk.
+    packagingOptions {
+        exclude 'LICENSE.txt'
     }
 
     buildTypes {
@@ -20,4 +35,14 @@ android {
 
 dependencies {
     compile files('libs/libjingle_peerconnection.jar')
+    androidTestCompile files('libs/espresso-1.1.jar',
+            'libs/testrunner-1.1.jar',
+            'libs/testrunner-runtime-1.1.jar')
+
+    androidTestCompile 'com.google.guava:guava:14.0.1',
+            'com.squareup.dagger:dagger:1.1.0',
+            'org.hamcrest:hamcrest-core:1.1',
+            'org.hamcrest:hamcrest-integration:1.1',
+            'org.hamcrest:hamcrest-library:1.1'
 }
+
