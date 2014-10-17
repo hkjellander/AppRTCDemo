@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -55,29 +56,29 @@ public class ConnectActivity extends Activity {
     });
   }
 
-  private void connectToRoom(String url) {
-    if (isUrlOk(url)) {
-      logAndToast(getString(R.string.connecting_to, url));
+  private void connectToRoom(String roomUrl) {
+    if (validateUrl(roomUrl)) {
+      Uri url = Uri.parse(roomUrl);
       Intent intent = new Intent(this, AppRTCDemoActivity.class);
-      intent.putExtra(CONNECT_URL_EXTRA, url);
+      intent.setData(url);
       startActivity(intent);
     }
   }
 
-  private boolean isUrlOk(String url) {
-    if (!URLUtil.isValidUrl(url)) {
-      new AlertDialog.Builder(this)
-          .setTitle(getText(R.string.invalid_url_title))
-          .setMessage(getString(R.string.invalid_url_text, url))
-          .setCancelable(false)
-          .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+  private boolean validateUrl(String url) {
+    if (URLUtil.isHttpsUrl(url) || URLUtil.isHttpUrl(url))
+      return true;
+
+    new AlertDialog.Builder(this)
+        .setTitle(getText(R.string.invalid_url_title))
+        .setMessage(getString(R.string.invalid_url_text, url))
+        .setCancelable(false)
+        .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
               dialog.cancel();
             }
           }).create().show();
-      return false;
-    }
-    return true;
+    return false;
   }
 
   // Log |msg| and Toast about it.

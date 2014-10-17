@@ -12,14 +12,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    <fragment
-        android:name="org.appspot.apprtc.AppRTCDemoActivity$MenuBarFragment"
-        android:id="@+id/menubar_fragment"
+    <TextView
+        android:id="@+id/room_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_above="@+id/menubar_fragment"
+        android:textSize="24sp"
+        android:layout_margin="8dp"/>
+    <fragment
+        android:name="org.appspot.apprtc.AppRTCDemoActivity$MenuBarFragment"
+        android:id="@+id/menubar_fragment"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="32dp"
+        android:layout_marginBottom="32dp"
         tools:layout="@layout/fragment_menubar"/>
 
 </RelativeLayout>

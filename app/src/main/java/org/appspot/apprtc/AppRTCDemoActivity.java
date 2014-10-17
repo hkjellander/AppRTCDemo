@@ -32,7 +32,9 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -95,6 +97,7 @@ public class AppRTCDemoActivity extends Activity
   private final LayoutParams hudLayout =
       new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
   private TextView hudView;
+  private TextView roomName;
   private LinkedList<IceCandidate> queuedRemoteCandidates =
       new LinkedList<IceCandidate>();
   // Synchronize on quit[0] to avoid teardown-related crashes.
@@ -132,8 +135,10 @@ public class AppRTCDemoActivity extends Activity
         new OnClickListener() {
           @Override
           public void onClick(View view) {
-            menuBar.setVisibility(menuBar.getVisibility() == View.VISIBLE ?
-                                      View.INVISIBLE : View.VISIBLE);
+           int visibility = menuBar.getVisibility() == View.VISIBLE
+                   ? View.INVISIBLE : View.VISIBLE;
+           menuBar.setVisibility(visibility);
+           roomName.setVisibility(visibility);
           }
         });
 
@@ -179,13 +184,22 @@ public class AppRTCDemoActivity extends Activity
         "OfferToReceiveVideo", "true"));
 
     final Intent intent = getIntent();
-    String url = intent.getStringExtra(ConnectActivity.CONNECT_URL_EXTRA);
+    Uri url = intent.getData();
+    roomName = (TextView) findViewById(R.id.room_name);
     if (url != null) {
-      logAndToast(getString(R.string.connecting_to, url));
-      appRtcClient.connectToRoom(url);
+      String room = url.getQueryParameter("r");
+      if (room != null && !room.equals("")) {
+        logAndToast(getString(R.string.connecting_to, url));
+        appRtcClient.connectToRoom(url.toString());
+        roomName.setText(room);
+      } else {
+        logAndToast("Empty or missing room name!");
+        finish();
+      }
     } else {
-      Toast.makeText(this, getString(R.string.missing_url), Toast.LENGTH_LONG);
-      Log.wtf(TAG, "Didn't get any URL in intent extra!");
+      toast(getString(R.string.missing_url));
+      Log.wtf(TAG, "Didn't get any URL in intent!");
+      finish();
     }
   }
 
@@ -390,6 +404,10 @@ public class AppRTCDemoActivity extends Activity
   // Log |msg| and Toast about it.
   private void logAndToast(String msg) {
     Log.d(TAG, msg);
+    toast(msg);
+  }
+
+  private void toast(String msg) {
     if (logToast != null) {
       logToast.cancel();
     }
