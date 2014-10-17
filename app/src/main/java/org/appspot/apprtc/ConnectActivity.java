@@ -56,29 +56,29 @@ public class ConnectActivity extends Activity {
     });
   }
 
-  private void connectToRoom(String uriString) {
-    Uri url = Uri.parse(uriString);
-    if (isUrlOk(url)) {
+  private void connectToRoom(String roomUrl) {
+    if (validateUrl(roomUrl)) {
+      Uri url = Uri.parse(roomUrl);
       Intent intent = new Intent(this, AppRTCDemoActivity.class);
       intent.setData(url);
       startActivity(intent);
     }
   }
 
-  private boolean isUrlOk(Uri url) {
-    if (url == null) {
-      new AlertDialog.Builder(this)
-          .setTitle(getText(R.string.invalid_url_title))
-          .setMessage(getString(R.string.invalid_url_text, url))
-          .setCancelable(false)
-          .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+  private boolean validateUrl(String url) {
+    if (URLUtil.isHttpsUrl(url) || URLUtil.isHttpUrl(url))
+      return true;
+
+    new AlertDialog.Builder(this)
+        .setTitle(getText(R.string.invalid_url_title))
+        .setMessage(getString(R.string.invalid_url_text, url))
+        .setCancelable(false)
+        .setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
               dialog.cancel();
             }
           }).create().show();
-      return false;
-    }
-    return true;
+    return false;
   }
 
   // Log |msg| and Toast about it.
