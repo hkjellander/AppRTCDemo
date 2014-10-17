@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -65,10 +65,19 @@ public class ConnectActivity extends Activity {
     }
   }
 
-  private boolean validateUrl(String url) {
-    if (URLUtil.isHttpsUrl(url) || URLUtil.isHttpUrl(url))
-      return true;
+  public static boolean isValidUrl(String url) {
+    if (!Patterns.WEB_URL.matcher(url).matches()) {
+      return false;
+    }
+    Uri uri = Uri.parse(url);
+    String room = uri.getQueryParameter("r");
+    return room != null && !room.equals("");
+  }
 
+  private boolean validateUrl(String url) {
+    if (isValidUrl(url)) {
+      return true;
+    }
     new AlertDialog.Builder(this)
         .setTitle(getText(R.string.invalid_url_title))
         .setMessage(getString(R.string.invalid_url_text, url))
