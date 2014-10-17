@@ -87,7 +87,7 @@ public class AppRTCDemoActivity extends Activity
   private final SDPObserver sdpObserver = new SDPObserver();
   private final GAEChannelClient.MessageHandler gaeHandler = new GAEHandler();
   private AppRTCClient appRtcClient = new AppRTCClient(this, gaeHandler, this);
-  private GLSurfaceView vsv;
+  private GLSurfaceView videoView;
   private View menuBar;
   private VideoRenderer.Callbacks localRender;
   private VideoRenderer.Callbacks remoteRender;
@@ -121,21 +121,21 @@ public class AppRTCDemoActivity extends Activity
 
     menuBar = findViewById(R.id.menubar_fragment);
 
-    vsv = (GLSurfaceView) findViewById(R.id.glview);
-    VideoRendererGui.setView(vsv);
+    videoView = (GLSurfaceView) findViewById(R.id.glview);
+    VideoRendererGui.setView(videoView);
     remoteRender = VideoRendererGui.create(0, 0, 100, 100,
         VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
     localRender = VideoRendererGui.create(70, 5, 25, 25,
         VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
 
-    vsv.setOnClickListener(
-      new OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          menuBar.setVisibility(menuBar.getVisibility() == View.VISIBLE ?
-                                    View.INVISIBLE : View.VISIBLE);
-        }
-      });
+    videoView.setOnClickListener(
+        new OnClickListener() {
+          @Override
+          public void onClick(View view) {
+            menuBar.setVisibility(menuBar.getVisibility() == View.VISIBLE ?
+                                      View.INVISIBLE : View.VISIBLE);
+          }
+        });
 
 
     ((ImageButton) findViewById(R.id.button_disconnect)).setOnClickListener(
@@ -248,7 +248,7 @@ public class AppRTCDemoActivity extends Activity
   @Override
   public void onPause() {
     super.onPause();
-    vsv.onPause();
+    videoView.onPause();
     if (videoSource != null) {
       videoSource.stop();
       videoSourceStopped = true;
@@ -258,7 +258,7 @@ public class AppRTCDemoActivity extends Activity
   @Override
   public void onResume() {
     super.onResume();
-    vsv.onResume();
+    videoView.onResume();
     if (videoSource != null && videoSourceStopped) {
       videoSource.restart();
     }
@@ -305,7 +305,7 @@ public class AppRTCDemoActivity extends Activity
               }
               final Runnable runnableThis = this;
               if (hudView.getVisibility() == View.INVISIBLE) {
-                vsv.postDelayed(runnableThis, 1000);
+                videoView.postDelayed(runnableThis, 1000);
                 return;
               }
               boolean success = finalPC.getStats(new StatsObserver() {
@@ -318,7 +318,7 @@ public class AppRTCDemoActivity extends Activity
                     for (StatsReport report : reports) {
                       Log.d(TAG, "Stats: " + report.toString());
                     }
-                    vsv.postDelayed(runnableThis, 1000);
+                    videoView.postDelayed(runnableThis, 1000);
                   }
                 }, null);
               if (!success) {
@@ -327,7 +327,7 @@ public class AppRTCDemoActivity extends Activity
             }
           }
         };
-      vsv.postDelayed(repeatedStatsLogger, 1000);
+      videoView.postDelayed(repeatedStatsLogger, 1000);
     }
 
     {
